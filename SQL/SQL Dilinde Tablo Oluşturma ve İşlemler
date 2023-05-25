@@ -1,0 +1,106 @@
+
+-- Tabloyu SQL dilinde oluşturmak için CREATE TABLE ifadesi
+CREATE TABLE ogrenciler (
+    adi VARCHAR(50),
+    soyadi VARCHAR(50),
+    cinsiyet VARCHAR(10),
+    sinav1 INT,
+    sinav2 INT,
+    gsinav INT
+);
+
+-- ALTER TABLE ile ortalama sütununu ekleyin
+ALTER TABLE ogrenciler ADD COLUMN ortalama DECIMAL(5,2);
+
+-- UPDATE ile ortalama değerlerini hesaplayın
+UPDATE ogrenciler
+SET ortalama = (sinav1 * 0.2) + (sinav2 * 0.2) + (gsinav * 0.6);
+
+-- ALTER TABLE ile durumu sütununu ekleyin
+ALTER TABLE ogrenciler ADD COLUMN durumu VARCHAR(10);
+
+-- UPDATE ile durum değerlerini belirleyin
+UPDATE ogrenciler
+SET durumu = CASE WHEN ortalama >= 50 THEN 'GEÇTİ' ELSE 'KALDI' END;
+
+-- Ortalama değeri 90 ve üzerinde olan öğrencileri listelemek için aşağıdaki SELECT sorgusu
+SELECT adi, soyadi
+FROM ogrenciler
+WHERE ortalama >= 90;
+
+-- Üç sınav notu da 90 ve üzeri olan öğrencileri listelemek için aşağıdaki SELECT sorgusu
+SELECT adi, soyadi
+FROM ogrenciler
+WHERE sinav1 >= 90 AND sinav2 >= 90 AND gsinav >= 90;
+
+-- En az bir sınav notu 90 ve üzeri olan öğrencileri listelemek için aşağıdaki SELECT sorgusu
+SELECT adi, soyadi
+FROM ogrenciler
+WHERE sinav1 >= 90 OR sinav2 >= 90 OR gsinav >= 90;
+
+-- Öğrencilerin adı, soyadıyla birlikte üç sınavın aritmetik ortalamasını yazdıran SELECT sorgusu
+SELECT adi, soyadi, (sinav1 + sinav2 + gsinav) / 3 AS ortalama
+FROM ogrenciler;
+
+-- Her sınavın ortalamasını yazdıran SELECT sorguları
+-- 1. arasınavın ortalaması
+SELECT AVG(sinav1) AS arasinav_ortalamasi FROM ogrenciler;
+
+-- 2. arasınavın ortalaması
+SELECT AVG(sinav2) AS arasinav_ortalamasi FROM ogrenciler;
+
+-- Genel sınavın ortalaması
+SELECT AVG(gsinav) AS genel_sınav_ortalamasi FROM ogrenciler;
+
+-- Kız öğrencilerin ortalamasının ortalamasını veren SELECT sorgusu
+SELECT AVG(ortalama) AS kiz_ogrenci_ortalamasi
+FROM ogrenciler
+WHERE cinsiyet = 'KADIN';
+
+-- Erkek öğrencilerin ortalamasının ortalamasını veren SELECT sorgusu
+SELECT AVG(ortalama) AS erkek_ogrenci_ortalamasi
+FROM ogrenciler
+WHERE cinsiyet = 'ERKEK';
+
+-- Ortalama değeri 60 ve üzeri olan öğrenci sayısını veren SELECT sorgusu
+SELECT COUNT(*) AS gecen_ogrenci_sayisi
+FROM ogrenciler
+WHERE ortalama >= 60;
+
+-- Genel sınavın en düşük notunu veren SELECT sorgusu
+SELECT MIN(gsinav) AS en_dusuk_genel_not FROM ogrenciler;
+
+-- Arasınavın en yüksek notunu veren SELECT sorgusu
+SELECT MAX(sinav1) AS en_yuksek_arasinav_notu FROM ogrenciler;
+
+-- Çetin Tekindor adlı öğrenciyi tabloya eklemek için INSERT INTO ifadesi
+INSERT INTO ogrenciler (adi, soyadi, cinsiyet, sinav1, sinav2, gsinav)
+VALUES ('Çetin', 'Tekindor', 'ERKEK', 70, 87, 43);
+
+-- Ahmet Metin olan öğrencinin soyadını "MEKİN" olarak güncellemek için UPDATE ifadesi
+UPDATE ogrenciler
+SET soyadi = 'MEKİN'
+WHERE adi = 'Ahmet' AND soyadi = 'Metin';
+
+-- Adının ilk harfi 'H' olan öğrencileri listeleyen SELECT sorgusu
+SELECT *
+FROM ogrenciler
+WHERE adi LIKE 'H%';
+
+-- Soyadı 'KOLÇAK' olan öğrencileri listeleyen SELECT sorgusu
+SELECT *
+FROM ogrenciler
+WHERE soyadi = 'KOLÇAK';
+
+-- MERVE AKAY adlı öğrencinin genel sınav notunu 90 olarak güncellemek ve diğer güncellemeleri yapmak için UPDATE ifadesi
+UPDATE ogrenciler
+SET gsinav = 90, ortalama = (sinav1 * 0.2) + (sinav2 * 0.2) + (90 * 0.6), durumu = CASE WHEN (sinav1 * 0.2) + (sinav2 * 0.2) + (90 * 0.6) >= 50 THEN 'GEÇTİ' ELSE 'KALDI' END
+WHERE adi = 'MERVE' AND soyadi = 'AKAY';
+
+-- Öğrenci Numarası(numara) kolonunu eklemek için ALTER TABLE ifadesi
+ALTER TABLE ogrenciler ADD COLUMN numara INT;
+
+-- Ortalama değeri 95'in üzerinde olan veya tüm sınav notları 90'ın üzerinde olan öğrencileri listeleyen SELECT sorgusu
+SELECT *
+FROM ogrenciler
+WHERE ortalama > 95 OR sinav1 > 90 AND sinav2 > 90 AND gsinav > 90;

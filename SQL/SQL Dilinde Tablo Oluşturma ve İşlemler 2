@@ -1,0 +1,39 @@
+-- "personel" adında bir tablo oluşturmak için SQL kodu
+CREATE TABLE personel (
+    adi VARCHAR(50),
+    soyadi VARCHAR(50),
+    dtar DATE,
+    isgirtar DATE,
+    maas INT,
+    cinsiyet VARCHAR(10),
+    bolumu VARCHAR(50),
+    cocuksay INT,
+    mhali VARCHAR(10)
+);
+
+-- 20 yıldan fazla çalışan 45 yaşın üstündeki kadınları ve 25 yıldan fazla çalışan 50 yaşın üstündeki erkekleri listeleyen komut
+SELECT *
+FROM personel
+WHERE (DATEDIFF(CURDATE(), isgirtar) > 7300 AND DATEDIFF(CURDATE(), dtar) > 16425 AND cinsiyet = 'KADIN')
+   OR (DATEDIFF(CURDATE(), isgirtar) > 9125 AND DATEDIFF(CURDATE(), dtar) > 18250 AND cinsiyet = 'ERKEK');
+
+-- 30 yıldan fazla çalışanlara 1 maaş, 20 yıldan fazla çalışanlara maaşın yüzde 50'si kadar ikramiye ödemek için kullanılan komut
+UPDATE personel
+SET maas = maas + CASE WHEN DATEDIFF(CURDATE(), isgirtar) > 10950 THEN maas
+                       WHEN DATEDIFF(CURDATE(), isgirtar) > 7300 THEN maas * 0.5
+                       ELSE 0 END;
+
+-- Son 5 yılda işe girenleri listeleyen komut
+SELECT *
+FROM personel
+WHERE DATEDIFF(CURDATE(), isgirtar) <= 1825;
+
+-- Yaşa göre sıralı bir liste almak için kullanılan komut
+SELECT *
+FROM personel
+ORDER BY DATEDIFF(CURDATE(), dtar);
+
+-- İşe giriş tarihine göre sıralı bir liste almak için kullanılan komut
+SELECT *
+FROM personel
+ORDER BY isgirtar;
